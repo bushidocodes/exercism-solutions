@@ -1,17 +1,12 @@
-def equilateral(sides):
-    return sides[0] != 0 and sides[0] == sides [1] and sides [1] == sides[2]
+def not_degenerate(sides: list[int]) -> bool:
+    [small, middle, large] = sorted(sides)
+    return small > 0 and  large < (middle + small)
 
-def isosceles(sides):
-    max_value = max(sides)
-    rest = sum(sides) - max_value
-    if (rest <= max_value):
-        return False
-    return (sides[0] == sides [1]) or (sides[1] == sides[2]) or (sides[2] == sides[0])
+def equilateral(sides: list[int]) -> bool:
+    return not_degenerate(sides) and sides[0] == sides[1] and sides[1] == sides[2]
 
-def scalene(sides):
-    max_value = max(sides)
-    rest = sum(sides) - max_value
-    if (rest <= max_value):
-        return False
-    return sides[0] != 0 and sides[0] != sides [1] and sides [1] != sides[2] and sides [0] != sides[2]
+def isosceles(sides: list[int]) -> bool:
+    return not_degenerate(sides) and len(set(sides)) < 3
 
+def scalene(sides: list[int]) -> bool:
+    return not_degenerate(sides) and sides[0] != sides[1] and sides[1] != sides[2] and sides[0] != sides[2]
