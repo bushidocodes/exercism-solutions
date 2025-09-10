@@ -1,7 +1,9 @@
+from typing import Literal
+
 """Functions to prevent a nuclear meltdown."""
 
 
-def is_criticality_balanced(temperature, neutrons_emitted):
+def is_criticality_balanced(temperature: int | float, neutrons_emitted: int | float) -> bool:
     """Verify criticality is balanced.
 
     :param temperature: int or float - temperature value in kelvin.
@@ -14,10 +16,10 @@ def is_criticality_balanced(temperature, neutrons_emitted):
     - The product of temperature and neutrons emitted per second is less than 500000.
     """
 
-    return temperature < 800 and neutrons_emitted > 500 and temperature * neutrons_emitted < 500000
+    return temperature < 800 and neutrons_emitted > 500 and (temperature * neutrons_emitted) < 500000
 
-
-def reactor_efficiency(voltage, current, theoretical_max_power):
+ReactorEfficiencyBand = Literal["green", "orange", "red", "black"]
+def reactor_efficiency(voltage: int | float, current: int | float, theoretical_max_power: int | float) -> ReactorEfficiencyBand:
     """Assess reactor efficiency zone.
 
     :param voltage: int or float - voltage value.
@@ -36,20 +38,19 @@ def reactor_efficiency(voltage, current, theoretical_max_power):
     (generated power/ theoretical max power)*100
     where generated power = voltage * current
     """
-    
-    generated_power = voltage * current
-    efficiency = (generated_power / theoretical_max_power) * 100
+    efficiency = voltage * current / theoretical_max_power * 100
 
-    if efficiency >= 80.0:
-        return 'green'
-    elif efficiency >= 60.0:
-        return 'orange'
-    elif efficiency >= 30.0:
-        return 'red'
+    if efficiency >= 80:
+        return "green"
+    elif efficiency >= 60:
+        return "orange"
+    elif efficiency >= 30:
+        return "red"
     else:
-        return 'black'
+        return "black"
 
-def fail_safe(temperature, neutrons_produced_per_second, threshold):
+ReactorStatusCode = Literal['LOW', 'NORMAL', 'DANGER']
+def fail_safe(temperature: int | float, neutrons_produced_per_second: int | float, threshold: int | float) -> ReactorStatusCode:
     """Assess and return status code for the reactor.
 
     :param temperature: int or float - value of the temperature in kelvin.
@@ -62,11 +63,10 @@ def fail_safe(temperature, neutrons_produced_per_second, threshold):
     3. 'DANGER' -> `temperature * neutrons per second` is not in the above-stated ranges
     """
 
-    output_relative_to_threshold = (temperature * neutrons_produced_per_second) / threshold
-
-    if output_relative_to_threshold < 0.9:
-        return 'LOW'
-    elif output_relative_to_threshold <= 1.1:
-        return 'NORMAL'
+    output = temperature * neutrons_produced_per_second
+    if output < threshold * 0.90:
+        return "LOW"
+    elif output > threshold * 0.90 and output < threshold * 1.10:
+        return "NORMAL"
     else:
-        return 'DANGER'
+        return "DANGER"    
