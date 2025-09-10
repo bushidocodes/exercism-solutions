@@ -1,3 +1,12 @@
+"""Functions for calculating steps in exchanging currency.
+
+Python numbers documentation: https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex
+
+Overview of exchanging currency when travelling: https://www.compareremit.com/money-transfer-tips/guide-to-exchanging-currency-for-overseas-travel/
+"""
+
+
+
 def exchange_money(budget, exchange_rate):
     """
 
@@ -7,6 +16,7 @@ def exchange_money(budget, exchange_rate):
     """
 
     return budget / exchange_rate
+
 
 def get_change(budget, exchanging_value):
     """
@@ -18,40 +28,41 @@ def get_change(budget, exchanging_value):
 
     return budget - exchanging_value
 
+
 def get_value_of_bills(denomination, number_of_bills):
     """
 
     :param denomination: int - the value of a bill.
-    :param number_of_bills: int - amount of bills you received.
-    :return: int - total value of bills you now have.
+    :param number_of_bills: int - total number of bills.
+    :return: int - calculated value of the bills.
     """
 
     return denomination * number_of_bills
 
 
-def get_number_of_bills(budget, denomination):
+def get_number_of_bills(amount, denomination):
     """
 
-    :param budget: float - the amount of money you are planning to exchange.
+    :param amount: float - the total starting value.
     :param denomination: int - the value of a single bill.
-    :return: int - number of bills after exchanging all your money.
+    :return: int - number of bills that can be obtained from the amount.
     """
 
-    return budget // denomination
+    return int(amount // denomination)
 
 
-def get_leftover_of_bills(budget, denomination):
+def get_leftover_of_bills(amount, denomination):
     """
 
-    :param budget: float - the amount of money you are planning to exchange.
+    :param amount: float - the total starting value.
     :param denomination: int - the value of a single bill.
-    :return: float - the leftover amount that cannot be exchanged given the current denomination.
+    :return: float - the amount that is "leftover", given the current denomination.
     """
 
-    return budget % denomination
+    return amount % denomination
 
 
-def exchangeable_value(budget, exchange_rate, spread, denomination):
+def exchangeable_value(budget: float, exchange_rate: float, spread: int, denomination):
     """
 
     :param budget: float - the amount of your money you are planning to exchange.
@@ -61,4 +72,8 @@ def exchangeable_value(budget, exchange_rate, spread, denomination):
     :return: int - maximum value you can get.
     """
 
-    return (budget / (exchange_rate * (1 + spread / 100))) // denomination * denomination
+    effective_rate = exchange_rate * (1 + (spread / 100))
+    value_of_exchanging_all = exchange_money(budget, effective_rate)
+    actual_amount_exchanged = get_number_of_bills(value_of_exchanging_all, denomination) * denomination
+    return actual_amount_exchanged
+    
