@@ -5,7 +5,7 @@ How to play blackjack:    https://bicyclecards.com/how-to-play/blackjack/
 """
 
 
-def value_of_card(card: str) -> int:
+def value_of_card(card):
     """Determine the scoring value of a card.
 
     :param card: str - given card.
@@ -15,13 +15,13 @@ def value_of_card(card: str) -> int:
     2.  'A' (ace card) = 1
     3.  '2' - '10' = numerical value.
     """
-    match card:
-        case "J" | "Q" | "K":
-            return 10
-        case "A":
-            return 1
-        case _:
-            return int(card)
+
+    if card in {'J', 'Q', 'K'}:
+        return 10
+    if card == 'A':
+        return 1
+    return int(card)
+
 
 def higher_card(card_one, card_two):
     """Determine which card has a higher value in the hand.
@@ -34,15 +34,12 @@ def higher_card(card_one, card_two):
     3.  '2' - '10' = numerical value.
     """
 
-    card_one_value = value_of_card(card_one)
-    card_two_value = value_of_card(card_two)
-
-    if card_one_value == card_two_value:
-        return (card_one, card_two)
-    if card_one_value > card_two_value:
+    if value_of_card(card_one) > value_of_card(card_two):
         return card_one
+    if value_of_card(card_one) < value_of_card(card_two):
+        return card_two
+    return card_one, card_two
 
-    return card_two
 
 def value_of_ace(card_one, card_two):
     """Calculate the most advantageous value for the ace card.
@@ -55,22 +52,13 @@ def value_of_ace(card_one, card_two):
     3.  '2' - '10' = numerical value.
     """
 
-    hand_value = 0
-
-    if card_one == "A":
-        hand_value += 11
-    else:
-        hand_value += value_of_card(card_one)
-
-    if card_two == "A":
-        hand_value += 11
-    else:
-        hand_value += value_of_card(card_two)
-
-    if hand_value <= 10:
+    sum_ = value_of_card(card_one) + value_of_card(card_two)
+    if card_one == 'A' or card_two == 'A':
+        sum_ += 10
+    if sum_ <= 10:
         return 11
-
     return 1
+
 
 def is_blackjack(card_one, card_two):
     """Determine if the hand is a 'natural' or 'blackjack'.
@@ -83,19 +71,7 @@ def is_blackjack(card_one, card_two):
     3.  '2' - '10' = numerical value.
     """
 
-    hand_value = 0
-
-    if card_one == "A":
-        hand_value += 11
-    else:
-        hand_value += value_of_card(card_one)
-
-    if card_two == "A":
-        hand_value += 11
-    else:
-        hand_value += value_of_card(card_two)
-
-    return hand_value == 21
+    return (card_one == 'A' or card_two == 'A') and value_of_card(card_one) + value_of_card(card_two) == 11
 
 
 def can_split_pairs(card_one, card_two):
@@ -104,7 +80,7 @@ def can_split_pairs(card_one, card_two):
     :param card_one, card_two: str - cards dealt.
     :return: bool - can the hand be split into two pairs? (i.e. cards are of the same value).
     """
-    
+
     return value_of_card(card_one) == value_of_card(card_two)
 
 
@@ -115,7 +91,4 @@ def can_double_down(card_one, card_two):
     :return: bool - can the hand can be doubled down? (i.e. totals 9, 10 or 11 points).
     """
 
-    hand_value = value_of_card(card_one) + value_of_card(card_two)
-
-    return hand_value in (9, 10, 11)
-        
+    return value_of_card(card_one) + value_of_card(card_two) in {9, 10, 11}
