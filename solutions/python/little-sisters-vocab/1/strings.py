@@ -1,3 +1,5 @@
+import string
+
 """Functions for creating, transforming, and adding prefixes to strings."""
 
 
@@ -26,17 +28,8 @@ def make_word_groups(vocab_words):
     produces the following string: 'en :: enclose :: enjoy :: enlighten'.
     """
 
-    prefix = ''
-    result = list()
+    return " :: ".join(vocab_words[0] + word if word is not vocab_words[0] else word for word in vocab_words)
 
-    for i, word in enumerate(vocab_words):
-        if i == 0:
-            prefix = word
-            result.append(prefix)
-        else:
-            result.append(prefix + word)
-            
-    return " :: ".join(result)
 
 def remove_suffix_ness(word):
     """Remove the suffix from the word while keeping spelling in mind.
@@ -47,10 +40,12 @@ def remove_suffix_ness(word):
     For example: "heaviness" becomes "heavy", but "sadness" becomes "sad".
     """
 
-    if word[-5] == 'i':
-        return word[:-5] + 'y'
-    else:
-        return word[:-4]
+    result = word
+    if result.endswith("iness"):
+        result = result.replace("iness", "y")
+    elif result.endswith("ness"):
+        result = result.removesuffix("ness")
+    return result
 
 def adjective_to_verb(sentence, index):
     """Change the adjective within the sentence to a verb.
@@ -59,8 +54,9 @@ def adjective_to_verb(sentence, index):
     :param index: int - index of the word to remove and transform.
     :return: str - word that changes the extracted adjective to a verb.
 
-    For example, ("It got dark as the sun set", 2) becomes "darken".
+    For example, ("It got dark as the sun set.", 2) becomes "darken".
     """
 
-    words = sentence[:-1].split(" ")
-    return words[index] + "en"
+    words = sentence.split()
+    adjective = words[index].strip(string.punctuation)
+    return adjective + "en"
