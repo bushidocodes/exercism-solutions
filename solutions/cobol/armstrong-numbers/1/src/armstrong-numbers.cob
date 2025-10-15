@@ -1,0 +1,32 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ARMSTRONG-NUMBERS.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       REPOSITORY. FUNCTION ALL INTRINSIC.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-NUMBER            PIC X(8).
+       01 WS-RESULT            PIC 9.
+          88 IS-ARMSTRING                VALUE 1 FALSE 0.
+       77 I                    PIC 9.
+       77 WS-NUMBER-OF-DIGITS  PIC 9.
+       77 WS-ACC               PIC 9(18) COMP.
+
+       PROCEDURE DIVISION.
+       ARMSTRONG-NUMBERS.
+           INITIALIZE WS-ACC
+
+           MOVE FUNCTION LENGTH(FUNCTION TRIM(WS-NUMBER)) TO
+              WS-NUMBER-OF-DIGITS 
+
+           PERFORM VARYING I FROM 1 BY 1 UNTIL I > WS-NUMBER-OF-DIGITS
+                   COMPUTE WS-ACC = WS-ACC + FUNCTION NUMVAL(WS-NUMBER
+                      (I:1)) ** WS-NUMBER-OF-DIGITS
+           END-PERFORM
+
+           IF WS-ACC = FUNCTION NUMVAL(WS-NUMBER)
+              SET IS-ARMSTRING TO TRUE
+           ELSE
+              SET IS-ARMSTRING TO FALSE
+           END-IF
+           .
