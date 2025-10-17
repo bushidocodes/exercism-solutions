@@ -1,0 +1,52 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. SPACE-AGE.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-INPUT                 PIC 9(30).
+       01 WS-WHICH-PLANET          PIC X(30).
+       01 WS-RESULT                PIC 9(4)V99.
+       01 WS-ERROR                 PIC X(30).
+       
+       77 EARTH-YEAR-IN-SECONDS    PIC 9(10)   VALUE 31557600.
+       77 MERCURY-YEAR-IN-SECONDS  PIC 9(10)   VALUE 7600544.
+       77 VENUS-YEAR-IN-SECONDS    PIC 9(10)   VALUE 19414166.
+       77 MARS-YEAR-IN-SECONDS     PIC 9(10)   VALUE 59354294.
+       77 JUPITER-YEAR-IN-SECONDS  PIC 9(10)   VALUE 374355659.
+       77 SATURN-YEAR-IN-SECONDS   PIC 9(10)   VALUE 929292362.
+       77 URANUS-YEAR-IN-SECONDS   PIC 9(10)   VALUE 2651370019.
+       77 NEPTUNE-YEAR-IN-SECONDS  PIC 9(10)   VALUE 5200418560.
+      
+       PROCEDURE DIVISION.
+       
+       ROUNDS-TO.
+           EVALUATE WS-WHICH-PLANET
+           WHEN "Earth"
+                DIVIDE WS-INPUT BY EARTH-YEAR-IN-SECONDS GIVING
+                   WS-RESULT ROUNDED
+           WHEN "Mercury"
+                DIVIDE WS-INPUT BY MERCURY-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Venus"
+                DIVIDE WS-INPUT BY VENUS-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Mars"
+                DIVIDE WS-INPUT BY MARS-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Jupiter"
+                DIVIDE WS-INPUT BY JUPITER-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Saturn"
+                DIVIDE WS-INPUT BY SATURN-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Uranus"
+                DIVIDE WS-INPUT BY URANUS-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN "Neptune"
+                DIVIDE WS-INPUT BY NEPTUNE-YEAR-IN-SECONDS
+                   GIVING WS-RESULT ROUNDED
+           WHEN OTHER
+                MOVE 0 TO WS-RESULT 
+                MOVE "not a planet" TO WS-ERROR
+           END-EVALUATE
+           .
