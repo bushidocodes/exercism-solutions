@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python-syntax:
+    name: Python syntax (compileall)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Byte-compile all Python solutions
+        run: |
+          if [ -d solutions/python ]; then
+            python -m compileall -q solutions/python
+          else
+            echo "No solutions/python directory; skip"
+          fi
+
+  bash-syntax:
+    name: Bash syntax (bash -n)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Shell-check solution scripts
+        run: |
+          if [ ! -d solutions/bash ]; then
+            echo "No solutions/bash directory; skip"
+            exit 0
+          fi
+          mapfile -t files < <(find solutions/bash -type f -name '*.sh')
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .sh files"
+            exit 0
+          fi
+          printf '%s\n' "${files[@]}" | xargs -r bash -n
+          echo "Checked ${#files[@]} shell scripts"
+
+  javascript-syntax:
+    name: JS/TS syntax (node --check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Syntax-check JS solutions
+        run: |
+          set -e
+          count=0
+          while IFS= read -r -d '' f; do
+            node --check "$f"
+            count=$((count+1))
+          done < <(find solutions/javascript solutions/typescript -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print0 2>/dev/null || true)
+          echo "Checked $count JS files"
